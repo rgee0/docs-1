@@ -120,15 +120,7 @@ Perhaps the open source version of inlets is for you, feel free to reach out to 
 
 Do you need to connect many clients to your inlets servers? Ask us about inlets-cloud, which can support thousands of tunnels and clients using inlets OSS or inlets PRO. inlets-cloud has its own REST API, metrics, authorization and CLI and is ideal for companies.
 
-Alternatively, if you're a home user or a small company using inlets PRO, [please become a GitHub Sponsor](https://github.com/sponsors/alexellis).
-
-### Buy SWAG
-
-If you are using the project and want to support the community, then buy some SWAG to say thanks for our work.
-
-![T-shirt and hoodie](images/inlets-swag.jpg)
-
-**Buy your own [inlets t-shirt, hoodie or mug](https://store.openfaas.com/)**
+Alternatively, if you're a home user or a small company using inlets PRO, you can become [a Sponsor of inlets on GitHub](https://github.com/sponsors/inlets).
 
 ## Connect with the community
 
