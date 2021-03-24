@@ -17,9 +17,13 @@ If you don't have a license for inlets PRO, then your IngressController will onl
 
 You can use [arkade](https://get-arkade.dev) or helm to install the various applications we are going to add to the cluster below. arkade provides an apps ecosystem that makes things much quicker.
 
+MacOS and Linux users:
+
 ```bash
 curl -sSLf https://dl.get-arkade.dev/ | sudo sh
 ```
+
+Windows users should install [Git Bash](https://git-scm.com/downloads) and run the above without `sudo.
 
 ## Create a Kubernetes cluster with KinD
 
@@ -37,7 +41,12 @@ arkade get kubectl --version v1.19.3
 Now create a cluster:
 
 ```bash
- kind create cluster
+$ kind create cluster
+```
+
+The initial creation could take a few minutes, but subsequent clusters creations are much faster.
+
+```
 Creating cluster "kind" ...
  ✓ Ensuring node image (kindest/node:v1.19.0) 🖼
  ✓ Preparing nodes 📦  

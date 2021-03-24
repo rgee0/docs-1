@@ -33,10 +33,14 @@ You can use inlets as a stand-alone networking tool, or integrate it into a plat
 
 ## Concept
 
-There are two flavours of inlets tunnels depending on your needs:
+[Inlets PRO](https://inlets.dev/) provides HTTPS and TCP tunnels with built-in TLS encryption.
 
-* [inlets PRO](https://inlets.dev/) - L4 tunnel for any TCP traffic including built-in TLS encryption. Commercial license: support & enterprise solutions available.
-* [inlets](https://github.com/inlets/inlets) - L7 tunnel for HTTP/HTTPS with OSS MIT license. TLS encryption needs to be added separately through a reverse proxy.
+You can start a HTTPS or TCP tunnel:
+
+* TCP (L4) tunnels can be used to connect TCP services such as a database, a reverse proxy, RDP, Kubernetes or SSH to the Internet. A single tunnel can expose multiple ports on an exit-server
+* HTTPS (L7) tunnels can be used to connect one or more HTTP endpoints from one network to another. A single tunnel can expose multiple websites or hosts, including LoadBalancing and multiple clients to one server.
+
+inlets PRO has secure defaults and comes includes additional documentation, examples, and integrations to make it easier to use. It also has a commercial license and support available.
 
 In the diagram we can see a developer has exposed a Node.js website on his or her laptop through the use of inlets and a server that has a public IPv4 address.
 
@@ -46,14 +50,15 @@ The remote server is called an "exit-node" or "exit-server" because that is wher
 
 ## Exit-servers
 
-An exit-server is a host that runs the `inlets server` or `inlets-pro server` command to expose its control-plane (websocket) to inlets clients. The inlets client can then connect to the exit-server and make services within its local network available through the exit-server.
+An exit-server is a host that runs the `inlets-pro server` command to expose its control-plane (websocket) to tunnel clients. The tunnel client can then connect to the exit-server and make services within its local network available remotely.
 
-Services are tunnelled through the exit-server, however unlike SaaS products such as Ngrok and Argo Tunnels, they do not need to be exposed on the public Internet. Exit-servers can also be run within Kubernetes Pods, and users who need to support many clients can use solutions like [inlets-cloud](https://inlets.dev/blog/2020/10/08/advanced-cloud-patterns.html).
+Services are tunnelled through the exit-server, however unlike SaaS products such as Ngrok and Argo Tunnels, they do not need to be exposed on the public Internet. 
 
 Exit servers can be set up manually, or you can use tooling like [Terraform](https://www.terraform.io), bash, cloud-init or additional inlets community projects:
 
 * [inletsctl](https://github.com/inlets/inletsctl)  - create individual exit-servers
 * [inlets-operator](https://github.com/inlets/inlets-operator) - get an exit-server for each LoadBalancer service in your Kubernetes cluster
+* [inlets PRO helm charts](https://github.com/inlets/inlets-pro/tree/master/chart) - deploy one or more inlets PRO clients or servers via helm
 
 > These share the same provisioning code and create exit-servers on a range of cloud platforms like: DigitalOcean, Packet, Scaleway, Hetzner, AWS EC2, Azure, and GCP.
 
@@ -85,10 +90,12 @@ Exit servers can be set up manually, or you can use tooling like [Terraform](htt
 
 ### inlets PRO with Kubernetes
 
+* [Expose a local HTTP server with a Let's Encrypt certificate](/get-started/quickstart-http)
 * [Quick-start: Expose Your IngressController and get TLS from LetsEncrypt and cert-manager](/get-started/quickstart-ingresscontroller-cert-manager?id=expose-your-ingresscontroller-and-get-tls-from-letsencrypt)
 * [Expose your local OpenFaaS functions to the Internet](https://inlets.dev/blog/2020/10/15/openfaas-public-endpoints.html)
 * [Get kubectl access to your private cluster from anywhere](https://blog.alexellis.io/get-private-kubectl-access-anywhere/)
 * [Get a private Docker registry with auth and TLS](https://blog.alexellis.io/get-a-tls-enabled-docker-registry-in-5-minutes/)
+* [Quick-start: Expose a Pod from your Kubernetes cluster with KinD](/get-started/quickstart-k8s-pod)
 
 ### inlets PRO Community blog posts
 
@@ -98,8 +105,6 @@ Exit servers can be set up manually, or you can use tooling like [Terraform](htt
 
 ### inlets OSS examples
 * [Advanced Cloud Patterns with inlets and inlets-cloud](https://inlets.dev/blog/2020/10/08/advanced-cloud-patterns.html)
-* [Quick-start: Expose a local HTTP server with a public IP](/get-started/quickstart-http)
-* [Quick-start: Expose a Pod from your Kubernetes cluster with KinD](/get-started/quickstart-k8s-pod)
 * [Video: Get public endpoints in seconds with inlets and create-react-app](https://www.youtube.com/watch?v=jrAqqe8N3q4&feature=youtu.be)
 
 ## Pricing
