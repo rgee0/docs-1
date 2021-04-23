@@ -81,16 +81,17 @@ Exit servers can be set up manually, or you can use tooling like [Terraform](htt
 ### inlets PRO
 
 * [Quick-start: Tunnel a private SSH server over inlets PRO](/get-started/quickstart-tcp-ssh)
-* [Quick-start: Expose a local website with HTTPS using Caddy](/get-started/quickstart-caddy)
+* [Expose a local HTTP server with a Let's Encrypt certificate](/get-started/quickstart-http)
 * [Quick-start: Tunnel a private database over inlets PRO](/get-started/quickstart-tcp-database)
 
-* [inlets PRO - reference architectures and configurations](https://github.com/inlets/inlets-pro)
+* [Quick-start: Expose one or more websites with HTTPS using Caddy](/get-started/quickstart-caddy)
 * [Expose Apache Cassandra running on your local machine, out to another network with TLS encryption](https://github.com/inlets/inlets-pro/blob/master/docs/cassandra-tutorial.md)
 * [Expose your private Grafana devops dashboards with Caddy and TLS](https://blog.alexellis.io/expose-grafana-dashboards/)
+* [Case-study: The Simple Way To Connect Existing Apps to Public Cloud](https://inlets.dev/blog/2021/04/07/simple-hybrid-cloud.html)
 
 ### inlets PRO with Kubernetes
 
-* [Expose a local HTTP server with a Let's Encrypt certificate](/get-started/quickstart-http)
+* [Case-study: Reliable local port-forwarding from Kubernetes](https://inlets.dev/blog/2021/04/13/local-port-forwarding-kubernetes.html)
 * [Quick-start: Expose Your IngressController and get TLS from LetsEncrypt and cert-manager](/get-started/quickstart-ingresscontroller-cert-manager?id=expose-your-ingresscontroller-and-get-tls-from-letsencrypt)
 * [Expose your local OpenFaaS functions to the Internet](https://inlets.dev/blog/2020/10/15/openfaas-public-endpoints.html)
 * [Get kubectl access to your private cluster from anywhere](https://blog.alexellis.io/get-private-kubectl-access-anywhere/)
