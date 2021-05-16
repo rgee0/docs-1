@@ -40,7 +40,7 @@ You can start a HTTPS or TCP tunnel:
 * TCP (L4) tunnels can be used to connect TCP services such as a database, a reverse proxy, RDP, Kubernetes or SSH to the Internet. A single tunnel can expose multiple ports on an exit-server
 * HTTPS (L7) tunnels can be used to connect one or more HTTP endpoints from one network to another. A single tunnel can expose multiple websites or hosts, including LoadBalancing and multiple clients to one server.
 
-inlets PRO has secure defaults and comes includes additional documentation, examples, and integrations to make it easier to use. It also has a commercial license and support available.
+inlets PRO has secure defaults and includes additional documentation, examples, and integrations to make it easier to use. It also has a commercial license and support available.
 
 In the diagram we can see a developer has exposed a Node.js website on his or her laptop through the use of inlets and a server that has a public IPv4 address.
 
