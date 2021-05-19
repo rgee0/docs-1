@@ -2,7 +2,14 @@
 
 inlets-operator adds public LoadBalancers to your local Kubernetes clusters.
 
-Install the inlets-operator using a single command with [arkade](https://get-arkade.dev/). arkade runs against any Kubernetes cluster and wraps the helm command-line.
+You can install the inlets-operator using a single command with [arkade](https://get-arkade.dev/) or with helm. arkade is an open-source Kubernetes marketplace and easier to use.
+
+For each provider, the minimum requirements tend to be:
+
+* An access token - for the operator to create VMs for inlets PRO servers
+* A region - where to create the VMs
+
+You will also need a [license for inlets PRO](https://inlets.dev/). You can apply for a free 14-day trial or purchase a license for personal or business use [in the store](https://inlets.dev/pricing)
 
 ## Install using arkade
 
@@ -15,15 +22,18 @@ arkade install inlets-operator \
  --license-file inlets-pro-license.txt # inlets-pro license file. (required)
 ```
 
-You can get a free trial, or a personal or business license on the [inlets webpage](https://inlets.dev/)
-
 ## Install using helm
 
 Checkout the inlets-operator helm chart [README](https://github.com/inlets/inlets-operator/blob/master/chart/inlets-operator/README.md) to know more about the values that can be passed to `--set` and to see provider specific example commands.
 
 ```bash
+# Create the Custom Resource Definition for a "Tunnel"
+kubectl apply -f \
+  https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml
+
 # Create a secret to store the service account key file
-kubectl create secret generic inlets-access-key --from-file=inlets-access-key=key.json
+kubectl create secret generic inlets-access-key \
+  --from-file=inlets-access-key=key.json
 
 # Add and update the inlets-operator helm repo
 helm repo add inlets https://inlets.github.io/inlets-operator/
@@ -33,26 +43,32 @@ helm repo update
 
 # Install inlets-operator with the required fields
 helm upgrade inlets-operator --install inlets/inlets-operator \
-  --set provider=$PROJECTID,zone=$ZONE,region=$REGION,projectID=$PROJECTID,inletsProLicense=$LICENSE
+  --set provider=$PROJECTID,zone=$ZONE,region=$REGION \
+  --set projectID=$PROJECTID \
+  --set inletsProLicense=$LICENSE
 ```
 
-View the code on GitHub: [inlets/inlets-operator](https://github.com/inlets/inlets-operator)
+View the code and chart on GitHub: [inlets/inlets-operator](https://github.com/inlets/inlets-operator)
 
 ## Instructions per cloud
 
-### Create exit node on DigitalOcean
+### Create tunnel servers on DigitalOcean
 
-Install with inlets PRO:
+Install with inlets PRO on [DigitalOcean](https://m.do.co/c/8d4e75e9886f).
+
+Assuming you have created an API key and saved it to `$HOME/Downloads/do-access-token`, run:
 
 ```bash
 arkade install inlets-operator \
  --provider digitalocean \
  --region lon1 \
  --token-file $HOME/Downloads/do-access-token \
- --license $(cat $HOME/inlets-pro-license.txt)
+ --license-file $HOME/.inlets/LICENSE
 ```
 
-### Create exit node on EC2
+### Create tunnel servers on AWS EC2
+
+Instructions for [AWS EC2](https://aws.amazon.com/ec2/)
 
 To use the instructions below you must have the AWS CLI configured with sufficient permissions to create users and roles.
 
@@ -125,12 +141,12 @@ arkade install inlets-operator \
  --region eu-west-1 \
  --token-file $HOME/Downloads/access-key \
  --secret-key-file $HOME/Downloads/secret-access-key \
- --license $(cat $HOME/inlets-pro-license.txt)
+ --license-file $HOME/.inlets/LICENSE
 ```
 
-### Create exit node on Google Compute Engine
+### Create tunnel servers on Google Compute Engine (GCE)
 
-If you do not have arkade installed, get it from [here](https://get-arkade.dev/)
+Instructions for [Google Cloud](https://cloud.google.com/compute)
 
 It is assumed that you have gcloud installed and configured on your machine.
 If not, then follow the instructions [here](https://cloud.google.com/sdk/docs/quickstarts)
@@ -163,7 +179,7 @@ gcloud iam service-accounts keys create key.json \
   --iam-account $SERVICEACCOUNT
 ```
 
-Install with inlets PRO:
+Install the operator:
 
 ```bash
 arkade install inlets-operator \
@@ -171,10 +187,61 @@ arkade install inlets-operator \
     --project-id $PROJECTID \
     --zone us-central1-a \
     --token-file key.json \
-    --license $(cat $HOME/inlets-pro-license.txt)
+    --license-file $HOME/.inlets/LICENSE
 ```
 
-### Create exit node on Linode
+### Create tunnel servers on Azure
+
+Instructions for [Azure](https://azure.com)
+
+Prerequisites:
+
+- You will need `az`. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- You'll need to have run `az login` also
+
+Generate Azure authentication file:
+
+```sh
+az ad sp create-for-rbac --sdk-auth\
+  > $HOME/Downloads/client_credentials.json
+```
+
+Find your region code with:
+
+```bash
+az account list-locations -o table
+
+DisplayName               Name                 RegionalDisplayName
+------------------------  -------------------  -------------------------------------
+United Kingdom            ukwest               United Kingdom
+```
+
+Install using helm:
+
+```bash
+export SUBSCRIPTION_ID=""
+export AZURE_REGION="ukwest"
+export INLETS_LICENSE="$(cat ~/.inlets/LICENSE)"
+export ACCESS_KEY="$HOME/Downloads/client_credentials.json"
+
+kubectl apply -f \
+  https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml
+
+kubectl create secret generic inlets-access-key \
+  --from-file=inlets-access-key=$ACCESS_KEY
+
+helm repo add inlets https://inlets.github.io/inlets-operator/
+helm repo update
+
+helm upgrade inlets-operator --install inlets/inlets-operator \
+  --set provider=azure,region=$AZURE_REGION \
+  --set subscriptionID=$SUBSCRIPTION_ID \
+  --set inletsProLicense=$LICENSE
+```
+
+### Create tunnel servers on Linode
+
+Instructions for [Linode](https://linode.com)
 
 Install using helm:
 
@@ -204,49 +271,4 @@ arkade install inlets-operator \
  --region us-east \
  --access-key <Linode API Access Key> \
  --license $(cat $HOME/inlets-pro-license.txt)
-```
-
-### Create exit node on Azure
-
-Prerequisites:
-
-- You will need `az`. See [Install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-
-Generate Azure auth file
-
-```sh
-az ad sp create-for-rbac --sdk-auth > ~/Downloads/client_credentials.json
-```
-
-Find your region code with:
-
-```bash
-az account list-locations -o table
-
-DisplayName               Name                 RegionalDisplayName
-------------------------  -------------------  -------------------------------------
-United Kingdom            uk                   United Kingdom
-```
-
-Install using helm:
-
-```bash
-export SUBSCRIPTION_ID=""
-export AZURE_REGION="uk"
-export INLETS_LICENSE="$(cat ~/.inlets/LICENSE)"
-export ACCESS_KEY="$HOME/Downloads/client_credentials.json"
-
-kubectl apply -f \
-  https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml
-
-kubectl create secret generic inlets-access-key \
-  --from-file=inlets-access-key=$ACCESS_KEY
-
-helm repo add inlets https://inlets.github.io/inlets-operator/
-helm repo update
-
-helm upgrade inlets-operator --install inlets/inlets-operator \
-  --set provider=azure,region=$AZURE_REGION \
-  --set subscriptionID=$SUBSCRIPTION_ID \
-  --set inletsProLicense=$LICENSE
 ```
