@@ -218,13 +218,35 @@ Generate Azure auth file
 az ad sp create-for-rbac --sdk-auth > ~/Downloads/client_credentials.json
 ```
 
+Find your region code with:
+
+```bash
+az account list-locations -o table
+
+DisplayName               Name                 RegionalDisplayName
+------------------------  -------------------  -------------------------------------
+United Kingdom            uk                   United Kingdom
+```
+
 Install using helm:
 
 ```bash
-kubectl apply -f ./artifacts/crds/
-kubectl create secret generic inlets-access-key --from-file=inlets-access-key=~/Downloads/client_credentials.json
+export SUBSCRIPTION_ID=""
+export AZURE_REGION="uk"
+export INLETS_LICENSE="$(cat ~/.inlets/LICENSE)"
+export ACCESS_KEY="$HOME/Downloads/client_credentials.json"
+
+kubectl apply -f \
+  https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml
+
+kubectl create secret generic inlets-access-key \
+  --from-file=inlets-access-key=$ACCESS_KEY
+
 helm repo add inlets https://inlets.github.io/inlets-operator/
 helm repo update
+
 helm upgrade inlets-operator --install inlets/inlets-operator \
-  --set provider=azure,region=eastus,subscriptionID=<Azure Subscription ID>,inletsProLicense=$LICENSE
+  --set provider=azure,region=AZURE_REGION \
+  --set subscriptionID=SUBSCRIPTION_ID \
+  --set inletsProLicense=$LICENSE
 ```
