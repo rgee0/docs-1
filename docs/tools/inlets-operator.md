@@ -246,7 +246,7 @@ helm repo add inlets https://inlets.github.io/inlets-operator/
 helm repo update
 
 helm upgrade inlets-operator --install inlets/inlets-operator \
-  --set provider=azure,region=AZURE_REGION \
-  --set subscriptionID=SUBSCRIPTION_ID \
+  --set provider=azure,region=$AZURE_REGION \
+  --set subscriptionID=$SUBSCRIPTION_ID \
   --set inletsProLicense=$LICENSE
 ```
