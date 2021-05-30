@@ -1,6 +1,8 @@
 # inlets-operator reference documentation
 
-inlets-operator adds public LoadBalancers to your local Kubernetes clusters.
+The [inlets/inlets-operator](https://github.com/inlets/inlets-operator) brings LoadBalancers with public IP addresses to your local Kubernetes clusters.
+
+> It works by creating VMs and running an inlets PRO tunnel server for you, the VM's public IP is then attached to the cluster and an inlets client Pod runs for you.
 
 You can install the inlets-operator using a single command with [arkade](https://get-arkade.dev/) or with helm. arkade is an open-source Kubernetes marketplace and easier to use.
 
