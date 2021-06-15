@@ -78,6 +78,12 @@ Exit servers can be set up manually, or you can use tooling like [Terraform](htt
 
 ## Tutorials
 
+### Getting started with your free trial
+
+We created a page to help you get started once you have your free trial license:
+
+* [Get started with your free trial](/get-started/free-trial)
+
 ### inlets PRO
 
 * [Quick-start: Tunnel a private SSH server over inlets PRO](/get-started/quickstart-tcp-ssh)
