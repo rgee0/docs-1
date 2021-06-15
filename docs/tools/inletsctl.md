@@ -23,117 +23,118 @@ curl -sLSf https://inletsctl.inlets.dev | sudo sh
 
 Windows users are encouraged to use [git bash](https://git-scm.com/downloads) to install the inletsctl binary.
 
-## Downloading inlets or inlets-pro
+## Downloading inlets-pro
 
 The `inletsctl download` command can be used to download the inlets/-pro binaries.
 
 Example usage:
 
 ```sh
-# Download the latest inlets binary
-inletsctl download
-
 # Download the latest inlets-pro binary
 inletsctl download --pro
 
-# Download a specific version of inlets/inlets-pro
-inletsctl download --version 2.6.2
-```
-
-## kfwd - Kubernetes service forwarding
-
-kfwd runs an inlets/-pro server on your local computer, then deploys an inlets client in your Kubernetes cluster using a Pod. This enables your local computer to access services from within the cluster as if they were running on your laptop.
-
-inlets PRO allows you to access any TCP service within the cluster, using an encrypted link:
-
-Forward the `figlet` pod from `openfaas-fn` on port `8080`:
-
-```bash
-inletsctl kfwd \
-  --pro \
-  --license $(cat ~/LICENSE)
-  --from figlet:8080 \
-  --namespace openfaas-fn \
-  --if 192.168.0.14
-```
-
-Note the `if` parameter is the IP address of your local computer, this must be reachable from the Kubernetes cluster.
-
-Then access the service via `http://127.0.0.1:8080`.
-
-Using inlets OSS you can only tunnel HTTP traffic, without encryption enabled:
-
-```bash
-inletsctl kfwd \
-  --from figlet:8080 \
-  --namespace openfaas-fn \
-  --if 192.168.0.14
-```
-
-## The `delete` command
-
-The delete command takes an id or IP address which are given to you at the end of the `inletsctl create` command. You'll also need to specify your cloud access token.
-
-```bash
-inletsctl delete \
-  --provider digitalocean \
-  --access-token-file ~/Downloads/do-access-token \
-  --id 164857028 \
-```
-
-Or delete via IP:
-
-```bash
-inletsctl delete \
-  --provider digitalocean \
-  --access-token-file ~/Downloads/do-access-token \
-  --ip 209.97.131.180 \
+# Download a specific version of inlets-pro
+inletsctl download --pro --version 0.8.5
 ```
 
 ## The `create` command
 
-## Quick-start - create an exit server
+### Create a HTTPS tunnel with a custom domain
 
 This example uses DigitalOcean to create a cloud VM and then exposes a local service via the newly created exit-server.
 
+Let's say we want to expose a Grafana server on our internal network to the Internet via [Let's Encrypt](https://letsencrypt.org/) and HTTPS?
+
 ```bash
+export DOMAIN="grafana.example.com"
+
 inletsctl create \
   --provider digitalocean \
   --region="lon1" \
+  --access-token-file $HOME/do-access-token \
+  --letsencrypt-domain $DOMAIN \
+  --letsencrypt-email webmaster@$DOMAIN \
+  --letsencrypt-issuer prod
+```
+
+You can also use `--letsencrypt-issuer` with the `staging` value whilst testing since Let's Encrypt rate-limits how many certificates you can obtain within a week.
+
+Create a DNS A record for the IP address so that `grafana.example.com` for instance resolves to that IP. For instance you could run:
+
+```bash
+doctl compute domain create \
+  --ip-address 46.101.60.161 grafana.example.com
+```
+
+Now run the command that you were given, and if you wish, change the upstream to point to the domain explicitly:
+
+```bash
+# Obtain a license at https://inlets.dev
+# Store it at $HOME/.inlets/LICENSE or use --help for more options
+
+# Where to route traffic from the inlets server
+export UPSTREAM="grafana.example.com=http://192.168.0.100:3000"
+
+inlets-pro http client --url "wss://46.101.60.161:8123" \
+--token "lRdRELPrkhA0kxwY0eWoaviWvOoYG0tj212d7Ff0zEVgpnAfh5WjygUVVcZ8xJRJ" \
+--upstream $UPSTREAM
+
+To delete:
+  inletsctl delete --provider digitalocean --id "248562460"
+```
+
+You can also specify more than one domain and upstream for the same tunnel, so you could expose OpenFaaS and Prometheus separately for instance.
+
+Update the `inletsctl create` command with multiple domains such as: `--letsencrypt-domain openfaas.example.com --letsencrypt-domain grafana.example.com`
+
+Then for the `inlets-pro client` command, update the upstream in the same way: `--upstream openfaas.example.com=http://127.0.0.1:8080,grafana.example.com=http://192.168.0.100:3000`
+
+### Create a HTTP tunnel
+
+This example uses Linode to create a cloud VM and then exposes a local service via the newly created exit-server.
+
+```bash
+export REGION="eu-west"
+
+inletsctl create \
+  --provider linode \
+  --region="$REGION" \
   --access-token-file $HOME/do-access-token
 ```
 
 You'll see the host being provisioned, it usually takes just a few seconds:
 
 ```
-Using provider: digitalocean
-Requesting host: gifted-mestorf9 in lon1, from digitalocean
-2020/08/26 10:58:36 Provisioning host with DigitalOcean
-Host: 205463148, status: 
-[1/500] Host: 205463148, status: new
+Using provider: linode
+Requesting host: peaceful-lewin8 in eu-west, from linode
+2021/06/01 15:56:03 Provisioning host with Linode
+Host: 248561704, status: 
+[1/500] Host: 248561704, status: new
 ...
-[16/500] Host: 205463148, status: active
-inlets OSS exit-server summary:
-  IP: 165.232.108.137
-  Auth-token: TlwzS2ze3hQEZTU3lvOk1dgQeHYQtyTX8ELlCYhdjis4FAMw1EDqlJfqr9w0XW5S
+[11/500] Host: 248561704, status: active
 
-Command:
-  export UPSTREAM=http://127.0.0.1:8000
-  inlets client --remote "ws://165.232.108.137:8080" \
-        --token "TlwzS2ze3hQEZTU3lvOk1dgQeHYQtyTX8ELlCYhdjis4FAMw1EDqlJfqr9w0XW5S" \
-        --upstream $UPSTREAM
-
-To Delete:
-        inletsctl delete --provider digitalocean --id "205463148"
+inlets PRO (0.7.0) exit-server summary:
+  IP: 188.166.168.90
+  Auth-token: dZTkeCNYgrTPvFGLifyVYW6mlP78ny3jhyKM1apDL5XjmHMLYY6MsX8S2aUoj8uI
 ```
 
 Now run the command given to you, changing the `--upstream` URL to match a local URL such as `http://127.0.0.1:3000`
 
 ```bash
-  export UPSTREAM=http://127.0.0.1:3000
-  inlets client --remote "ws://165.232.108.137:8080" \
-        --token "TlwzS2ze3hQEZTU3lvOk1dgQeHYQtyTX8ELlCYhdjis4FAMw1EDqlJfqr9w0XW5S" \
-        --upstream $UPSTREAM
+# Obtain a license at https://inlets.dev
+export LICENSE="$HOME/.inlets/license"
+
+# Give a single value or comma-separated
+export PORTS="8000"
+
+# Where to route traffic from the inlets server
+export UPSTREAM="localhost"
+
+inlets-pro client --url "wss://188.166.168.90:8123/connect" \
+  --token "dZTkeCNYgrTPvFGLifyVYW6mlP78ny3jhyKM1apDL5XjmHMLYY6MsX8S2aUoj8uI" \
+  --license-file "$LICENSE" \
+  --upstream $UPSTREAM \
+  --ports $PORTS
 ```
 
 You can then access your local website via the Internet and the exit-server's IP at:
@@ -143,14 +144,15 @@ http://165.232.108.137
 When you're done, you can delete the host using its ID or IP address:
 
 ```bash
-inletsctl delete --id 205463148
+  inletsctl delete --provider linode --id "248561704"
+  inletsctl delete --provider linode --ip "188.166.168.90"
 ```
 
-## Quick-start - create an exit server (inlets PRO)
+### Create a tunnel for a TCP service
 
 This example is similar to the previous one, but also adds link-level encryption between your local service and the exit-server.
 
-In addition, you can also expose pure TCP traffic such as SSH or Postgres.
+In addition, you can also expose pure TCP traffic such as SSH or Postgresql.
 
 ```sh
 inletsctl create \
@@ -228,6 +230,8 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 MariaDB [(none)]> create database test; 
 Query OK, 1 row affected (0.039 sec)
 ```
+
+## Examples for specific cloud providers
 
 ### Example usage with AWS EC2
 
@@ -435,6 +439,47 @@ inletsctl create --provider scaleway \
 
 The region is hard-coded to France / Paris 1.
 
+## The `delete` command
+
+The delete command takes an id or IP address which are given to you at the end of the `inletsctl create` command. You'll also need to specify your cloud access token.
+
+```bash
+inletsctl delete \
+  --provider digitalocean \
+  --access-token-file ~/Downloads/do-access-token \
+  --id 164857028 \
+```
+
+Or delete via IP:
+
+```bash
+inletsctl delete \
+  --provider digitalocean \
+  --access-token-file ~/Downloads/do-access-token \
+  --ip 209.97.131.180 \
+```
+
+## kfwd - Kubernetes service forwarding
+
+kfwd runs an inlets-pro server on your local computer, then deploys an inlets client in your Kubernetes cluster using a Pod. This enables your local computer to access services from within the cluster as if they were running on your laptop.
+
+inlets PRO allows you to access any TCP service within the cluster, using an encrypted link:
+
+Forward the `figlet` pod from `openfaas-fn` on port `8080`:
+
+```bash
+inletsctl kfwd \
+  --pro \
+  --license $(cat ~/LICENSE)
+  --from figlet:8080 \
+  --namespace openfaas-fn \
+  --if 192.168.0.14
+```
+
+Note the `if` parameter is the IP address of your local computer, this must be reachable from the Kubernetes cluster.
+
+Then access the service via `http://127.0.0.1:8080`.
+
 ## Troubleshooting
 
 inletsctl provisions a host called an exit node or exit server using public cloud APIs. It then 
@@ -461,21 +506,6 @@ sudo journalctl -u inlets-pro
 ```
 
 You can also check the configuration in `/etc/default/inlets-pro`, to make sure that an IP address and token are configured.
-
-### Troubleshooting inlets OSS
-
-Try to connect on port 8080, where the control-port is being served. Does it connect, or not?
-
-Connect with ssh to the exit-server and check the logs of the inlets service:
-
-```bash
-sudo systemctl status inlets
-
-# Check its logs
-sudo journalctl -u inlets
-```
-
-You can also check the configuration in `/etc/default/inlets`, to make sure that an IP address and token are configured.
 
 ## Configuration using environment variables
 
