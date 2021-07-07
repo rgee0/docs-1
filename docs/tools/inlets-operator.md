@@ -11,7 +11,7 @@ For each provider, the minimum requirements tend to be:
 * An access token - for the operator to create VMs for inlets PRO servers
 * A region - where to create the VMs
 
-You will also need a [license for inlets PRO](https://inlets.dev/). You can apply for a free 14-day trial or purchase a license for personal or business use [in the store](https://inlets.dev/pricing)
+You will also need a license for [inlets PRO](https://inlets.dev/). You can apply for a free 14-day trial or purchase a license for personal or business use [in the store](https://inlets.dev/pricing)
 
 ## Install using arkade
 

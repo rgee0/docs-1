@@ -120,11 +120,7 @@ We created a page to help you get started once you have your free trial license:
 
 Buy an inlets PRO license for personal or commercial use:
 
-* [inlets PRO pricing](https://inlets.dev/)
-
-Try before you buy?
-
-* [Start a free 14-day trial of inlets PRO](https://docs.google.com/forms/d/e/1FAIpQLScfNQr1o_Ctu_6vbMoTJ0xwZKZ3Hszu9C-8GJGWw1Fnebzz-g/viewform)
+* [inlets PRO pricing](https://inlets.dev/pricing)
 
 ### inlets OSS
 
@@ -132,7 +128,7 @@ Perhaps the open source version of inlets is for you, feel free to reach out to 
 
 Do you need to connect many clients to your inlets servers? Ask us about inlets-cloud, which can support thousands of tunnels and clients using inlets OSS or inlets PRO. inlets-cloud has its own REST API, metrics, authorization and CLI and is ideal for companies.
 
-Alternatively, if you're a home user or a small company using inlets PRO, you can become [a Sponsor of inlets on GitHub](https://github.com/sponsors/inlets).
+Alternatively, if you're a home user or a small company using inlets OSS, then you can support the project [via GitHub Sponsors](https://github.com/sponsors/inlets).
 
 ## Connect with the community
 
