@@ -6,7 +6,7 @@ VPNs traditionally require up-front configuration like subnet assignment and por
 
 You can run inlets as a stand-alone binary, in Docker, integrated into [Kubernetes](https://kubernetes.io) for [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), or with cloud APIs. All services can be kept private in the target network, or exposed publicly.
 
-> Inlets and [inlets PRO](https://inlets.dev/) are both available for MacOS, Linux (including ARM), Windows, FreeBSD, and as Docker containers.
+> [inlets PRO](https://inlets.dev/) is both available for MacOS, Linux (including ARM), Windows, FreeBSD, and as Docker containers. inlets OSS is available for hobbyists only in source only with no support guarantee or warranty.
 
 ## Use-cases
 
@@ -112,7 +112,6 @@ We created a page to help you get started once you have your free trial license:
 
 ### inlets OSS examples
 * [Advanced Cloud Patterns with inlets and inlets-cloud](https://inlets.dev/blog/2020/10/08/advanced-cloud-patterns.html)
-* [Video: Get public endpoints in seconds with inlets and create-react-app](https://www.youtube.com/watch?v=jrAqqe8N3q4&feature=youtu.be)
 
 ## Pricing
 
@@ -124,7 +123,7 @@ Buy an inlets PRO license for personal or commercial use:
 
 ### inlets OSS
 
-Perhaps the open source version of inlets is for you, feel free to reach out to us at [sales@openfaas.com](mailto:sales@openfaas.com) for a quote on commercial support, training, and custom solutions for any of the inlets projects.
+Perhaps the open source version of inlets is for you, feel free to reach out to us at [contact@openfaas.com](mailto:contact@openfaas.com) for a quote on commercial support, training, and custom solutions for any of the inlets projects.
 
 Do you need to connect many clients to your inlets servers? Ask us about inlets-cloud, which can support thousands of tunnels and clients using inlets OSS or inlets PRO. inlets-cloud has its own REST API, metrics, authorization and CLI and is ideal for companies.
 
